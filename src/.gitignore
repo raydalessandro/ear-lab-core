@@ -1,50 +1,83 @@
-# Dependencies
-/node_modules
-/.pnpm-store
-/.yarn
-/.npm
+# ============================================================
+# .gitignore — ear-lab-core
+# ============================================================
+# Filtro che dice a Git quali file/cartelle ignorare.
+# Non parla con Vercel, npm o la build: parla solo con Git.
+# L'effetto a valle è che ciò che è ignorato qui non finisce
+# nel repo, quindi non viene clonato/deployato.
 
-# Build outputs
-/dist
-/.next
-/out
-/build
+# ------------------------------------------------------------
+# Dependencies (rigenerabili da package.json + lockfile)
+# ------------------------------------------------------------
+node_modules
+.pnpm-store
+.yarn
+.npm
 
-# Environment
+# ------------------------------------------------------------
+# Build outputs (rigenerabili da `npm run build`)
+# ------------------------------------------------------------
+dist
+.next
+out
+build
+
+# ------------------------------------------------------------
+# Environment & secrets
+# ------------------------------------------------------------
 .env
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
+.env.staging
+.env.*.local
 
+# Eccezione: il file di esempio va committato (senza valori veri)
+!.env.example
+
+# ------------------------------------------------------------
 # IDE & Editor
+# ------------------------------------------------------------
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Testing
+# ------------------------------------------------------------
+# Testing outputs
+# ------------------------------------------------------------
 coverage/
 .playwright/
 test-results/
 playwright-report/
+.vitest-cache/
 
+# ------------------------------------------------------------
 # Logs
+# ------------------------------------------------------------
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
-# Misc
-.DS_Store
-*.pem
-
+# ------------------------------------------------------------
 # Cache
+# ------------------------------------------------------------
 .eslintcache
 .turbo
 .next-cache
+.cache/
 vite.config.ts.timestamp-*
 
-# Local Supabase / Dev tools
-supabase/.env
-supabase/.tmp
+# ------------------------------------------------------------
+# OS & misc
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.pem
