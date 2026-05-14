@@ -7,12 +7,12 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "test:unit": "vitest run",
-    "test:unit:watch": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:ci": "npm run test:unit && npm run test:e2e",
+    "test:ci": "npm run test && npm run test:e2e",
     "lint": "eslint src --ext .ts,.tsx",
-    "type-check": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "zod": "^3.23.8"
