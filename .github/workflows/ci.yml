@@ -1,0 +1,207 @@
+# ============================================================
+# CI workflow — ear-lab-core
+# ============================================================
+# Copia di ear-lab-standards/test/ci-cd/workflow-template.yml.
+# Personalizzazioni vanno nel package.json del repo (nomi script),
+# non in questo file. Se devi modificare questo file, probabilmente
+# stai sbagliando: il workflow è standard condiviso tra tutti i repo.
+#
+# Si adatta automaticamente:
+# - Rileva pnpm vs npm (presenza di pnpm-lock.yaml)
+# - Salta gentilmente i job che il package.json non definisce
+# - I job girano in parallelo per ridurre il wall-time
+
+name: CI
+
+on:
+  push:
+    branches-ignore: [main]   # i push diretti su main sono rari (solo merge da PR)
+  pull_request:
+    branches: [main]
+
+# Cancella run precedenti sullo stesso branch se ne arriva uno nuovo.
+# Risparmia minuti CI quando si fa push veloce in serie.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ============================================================
+  # Setup condiviso: rileva package manager, controlla quali
+  # script esistono in package.json. Tutti i job successivi
+  # leggono questi output per decidere se girare o saltare.
+  # ============================================================
+
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      package-manager: ${{ steps.detect.outputs.pm }}
+      has-typecheck: ${{ steps.scripts.outputs.has-typecheck }}
+      has-lint: ${{ steps.scripts.outputs.has-lint }}
+      has-test: ${{ steps.scripts.outputs.has-test }}
+      has-e2e: ${{ steps.scripts.outputs.has-e2e }}
+      has-build: ${{ steps.scripts.outputs.has-build }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect package manager
+        id: detect
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            echo "pm=pnpm" >> $GITHUB_OUTPUT
+          else
+            echo "pm=npm" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect available scripts
+        id: scripts
+        run: |
+          has() {
+            node -e "process.exit(require('./package.json').scripts?.['$1'] ? 0 : 1)" 2>/dev/null && echo true || echo false
+          }
+          echo "has-lint=$(has lint)" >> $GITHUB_OUTPUT
+          echo "has-typecheck=$(has typecheck)" >> $GITHUB_OUTPUT
+          echo "has-test=$(has test)" >> $GITHUB_OUTPUT
+          echo "has-e2e=$(has test:e2e || has e2e)" >> $GITHUB_OUTPUT
+          echo "has-build=$(has build)" >> $GITHUB_OUTPUT
+
+  # ============================================================
+  # Lint — coerenza stilistica e bug banali.
+  # Salta se il repo non ha lo script "lint".
+  # ============================================================
+
+  lint:
+    name: Lint
+    needs: setup
+    if: needs.setup.outputs.has-lint == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+      - run: ${{ needs.setup.outputs.package-manager }} run lint
+
+  # ============================================================
+  # Typecheck — errori di tipo TS prima dei test.
+  # ============================================================
+
+  typecheck:
+    name: Typecheck
+    needs: setup
+    if: needs.setup.outputs.has-typecheck == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+      - run: ${{ needs.setup.outputs.package-manager }} run typecheck
+
+  # ============================================================
+  # Test — unit + integration via Vitest.
+  # ============================================================
+
+  test:
+    name: Test (unit + integration)
+    needs: setup
+    if: needs.setup.outputs.has-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+      - run: ${{ needs.setup.outputs.package-manager }} run test
+
+  # ============================================================
+  # Build — verifica che il bundle si produca correttamente.
+  # Cattura errori di compile non visti da typecheck/lint.
+  # ============================================================
+
+  build:
+    name: Build
+    needs: setup
+    if: needs.setup.outputs.has-build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+      - run: ${{ needs.setup.outputs.package-manager }} run build
+
+  # ============================================================
+  # E2E — Playwright end-to-end.
+  # Salta se il repo non ha lo script "test:e2e".
+  # Installa i browser via cache per evitare download di 500MB
+  # ad ogni run.
+  # ============================================================
+
+  e2e:
+    name: E2E (Playwright)
+    needs: setup
+    if: needs.setup.outputs.has-e2e == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install
+
+      - name: Get Playwright version
+        id: pw-version
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').devDependencies?.['@playwright/test'] || '')")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}
+
+      - name: Install Playwright browsers
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system deps (cached)
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Run E2E
+        run: |
+          if node -e "process.exit(require('./package.json').scripts?.['test:e2e'] ? 0 : 1)"; then
+            ${{ needs.setup.outputs.package-manager }} run test:e2e
+          else
+            ${{ needs.setup.outputs.package-manager }} run e2e
+          fi
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ============================================================
+  # Sentinel — un singolo job verde alla fine, da usare come
+  # "required status check" nella branch protection rule.
+  # Così non devi aggiungere ogni job singolarmente nelle settings.
+  # ============================================================
+
+  ci-success:
+    name: CI Success
+    if: always()
+    needs: [setup, lint, typecheck, test, build, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all required jobs passed
+        run: |
+          # I job opzionali (skipped) sono ok. I falliti no.
+          for result in \
+            "${{ needs.lint.result }}" \
+            "${{ needs.typecheck.result }}" \
+            "${{ needs.test.result }}" \
+            "${{ needs.build.result }}" \
+            "${{ needs.e2e.result }}"
+          do
+            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+              echo "❌ Un job richiesto è fallito o è stato cancellato."
+              exit 1
+            fi
+          done
+          echo "✅ Tutti i job richiesti sono passati (o skippati gentilmente)."
