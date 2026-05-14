@@ -1,0 +1,50 @@
+# ============================================================
+# Composite action: install dipendenze
+# ============================================================
+# Centralizza i passi di setup (rileva package manager, installa
+# Node, cache, install dipendenze) così non vanno ripetuti in
+# ogni job del workflow CI.
+#
+# Richiamata dai job con: `uses: ./.github/actions/install`
+#
+# Il file DEVE chiamarsi `action.yml` (non `install.yml` né altro).
+# Convenzione fissa di GitHub Actions: se la cartella è `install/`,
+# il file dentro deve essere `action.yml`.
+
+name: Install dependencies
+description: Install with the right package manager + cache
+
+runs:
+  using: composite
+  steps:
+    - name: Detect package manager
+      id: detect
+      shell: bash
+      run: |
+        if [ -f pnpm-lock.yaml ]; then
+          echo "pm=pnpm" >> $GITHUB_OUTPUT
+        else
+          echo "pm=npm" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Setup pnpm
+      if: steps.detect.outputs.pm == 'pnpm'
+      uses: pnpm/action-setup@v4
+      with:
+        run_install: false
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: ${{ steps.detect.outputs.pm }}
+
+    - name: Install (pnpm)
+      if: steps.detect.outputs.pm == 'pnpm'
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    - name: Install (npm)
+      if: steps.detect.outputs.pm == 'npm'
+      shell: bash
+      run: npm ci
