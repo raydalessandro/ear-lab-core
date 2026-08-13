@@ -63,8 +63,16 @@ jobs:
           echo "has-lint=$(has lint)" >> $GITHUB_OUTPUT
           echo "has-typecheck=$(has typecheck)" >> $GITHUB_OUTPUT
           echo "has-test=$(has test)" >> $GITHUB_OUTPUT
-          echo "has-e2e=$(has test:e2e || has e2e)" >> $GITHUB_OUTPUT
           echo "has-build=$(has build)" >> $GITHUB_OUTPUT
+
+          # `has` termina sempre con exit 0 (stampa "true"/"false" e basta),
+          # quindi `has test:e2e || has e2e` non valuta mai il secondo ramo.
+          # Il confronto va fatto sull'output, non sullo stato di uscita.
+          if [ "$(has test:e2e)" = "true" ] || [ "$(has e2e)" = "true" ]; then
+            echo "has-e2e=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-e2e=false" >> $GITHUB_OUTPUT
+          fi
 
   # ============================================================
   # Lint — coerenza stilistica e bug banali.
@@ -189,19 +197,54 @@ jobs:
     needs: [setup, lint, typecheck, test, build, e2e]
     runs-on: ubuntu-latest
     steps:
-      - name: Verify all required jobs passed
+      - name: Verify setup succeeded
         run: |
-          # I job opzionali (skipped) sono ok. I falliti no.
-          for result in \
-            "${{ needs.lint.result }}" \
-            "${{ needs.typecheck.result }}" \
-            "${{ needs.test.result }}" \
-            "${{ needs.build.result }}" \
-            "${{ needs.e2e.result }}"
-          do
-            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
-              echo "❌ Un job richiesto è fallito o è stato cancellato."
-              exit 1
+          # Se setup fallisce, tutti i job a valle risultano "skipped".
+          # Senza questo controllo il sentinel non troverebbe nessun
+          # "failure" e la CI passerebbe verde senza aver eseguito nulla.
+          if [ "${{ needs.setup.result }}" != "success" ]; then
+            echo "❌ setup: esito '${{ needs.setup.result }}'."
+            echo "   I job a valle non sono stati eseguiti."
+            exit 1
+          fi
+          echo "✅ setup: passato."
+
+      - name: Verify all declared jobs passed
+        run: |
+          # Un job può essere saltato per due motivi opposti:
+          # - il package.json non dichiara lo script → salto legittimo
+          # - qualcosa a monte è andato storto → salto da trattare come rosso
+          # Il confronto con l'output has-* distingue i due casi.
+          fallito=0
+
+          verifica() {
+            nome="$1"
+            dichiarato="$2"
+            esito="$3"
+
+            if [ "$dichiarato" != "true" ]; then
+              echo "⏭️  $nome: nessuno script in package.json, salto previsto."
+              return
             fi
-          done
-          echo "✅ Tutti i job richiesti sono passati (o skippati gentilmente)."
+
+            if [ "$esito" != "success" ]; then
+              echo "❌ $nome: dichiarato in package.json ma esito '$esito'."
+              fallito=1
+              return
+            fi
+
+            echo "✅ $nome: passato."
+          }
+
+          verifica lint      "${{ needs.setup.outputs.has-lint }}"      "${{ needs.lint.result }}"
+          verifica typecheck "${{ needs.setup.outputs.has-typecheck }}" "${{ needs.typecheck.result }}"
+          verifica test      "${{ needs.setup.outputs.has-test }}"      "${{ needs.test.result }}"
+          verifica build     "${{ needs.setup.outputs.has-build }}"     "${{ needs.build.result }}"
+          verifica e2e       "${{ needs.setup.outputs.has-e2e }}"       "${{ needs.e2e.result }}"
+
+          if [ "$fallito" != "0" ]; then
+            echo "❌ Almeno un job dichiarato non è passato."
+            exit 1
+          fi
+
+          echo "✅ Tutti i job dichiarati sono passati."
