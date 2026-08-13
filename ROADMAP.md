@@ -73,6 +73,10 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
   - `defineEventCatalog` collega chiavi evento e schema Zod del payload.
   - Il bus in-memory valida envelope e payload, espone subscription per tipo e audit globale.
   - Non incorpora notifiche, database, webhook, retry o broker: tali adapter restano nei consumer.
+- ✅ **`serial-story/`** — Ledger puro degli effetti episodio
+  - Normalizza effetti di semi e debiti, poi li applica in modo immutabile a un ledger estendibile.
+  - Deriva da Rocco-Zara e Scrivia, che hanno serializzatori e golden cross-repository condivisi.
+  - Restano fuori serializzazione completa, canone, audit, tracker, artefatti, filesystem e generazione narrativa.
 
 ### Decisioni di non-promozione documentate
 
@@ -125,3 +129,6 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
 - 2026-08-13: C1 `content-workflow` valutata e non promossa: 67_ENT, Scrivia e Isola
   non condividono un lifecycle editoriale. Decisione documentata con condizioni
   concrete per una futura estrazione.
+- 2026-08-13: Estratto `serial-story`: ledger Zod di semi/debiti, patch deduplicata e
+  applicazione immutabile, comune ai serializzatori di Rocco-Zara e Scrivia. Il canone,
+  il seed, l’audit e ogni adapter restano nei consumer.

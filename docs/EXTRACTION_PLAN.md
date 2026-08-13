@@ -81,7 +81,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 | Ordine | Modulo | Origine → consumer | Condizione di promozione |
 |---:|---|---|---|
 | C1 | `content-workflow` | 67_ENT → Isola/Scrivia | **Non promosso:** Scrivia usa gate di produzione derivati da artefatti e Isola check tecnici, non il lifecycle review/approval di 67_ENT. Vedi `docs/CONTENT_WORKFLOW_PROMOTION_DECISION.md`. |
-| C2 | `serial-story` | Rocco-Zara → Scrivia | Un episodio reale passa da stato canonico a seed/audit senza copia di file. |
+| C2 | `serial-story` | Rocco-Zara → Scrivia | **Completato:** i due serializzatori condividono la risoluzione immutabile di semi e debiti; il core ospita solo il ledger, non canone, seed, audit o file. |
 | C3 | `ai-readable-publisher` | EAR mktg website → Isola | Un corpus non-EAR produce catalogo, Markdown raw e indice per agenti. |
 | C4 | `lead-core` | Automotive → secondo verticale | Due target con attributi diversi condividono schema core, consenso e audit trail. |
 
@@ -126,7 +126,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 
 ## Prossimo incremento verificabile
 
-C1 è stato valutato e **non promosso**: manca un secondo consumer con lo stesso lifecycle editoriale di 67_ENT. Il prossimo incremento verificabile è **C2 `serial-story`**: si potrà estrarre solo una proiezione di saga realmente consumata da Scrivia, senza copiare file o introdurre il dominio narrativo nel core.
+C1 è stato valutato e **non promosso**; C2 ha estratto il solo ledger puro comune ai serializzatori di Rocco-Zara e Scrivia. Il prossimo incremento verificabile è **C3 `ai-readable-publisher`**: il core potrà ospitare un contratto solo se una fonte non-EAR genera davvero catalogo, Markdown raw e indice per agenti senza imporre il proprio build system.
 
 ## Riferimenti
 
