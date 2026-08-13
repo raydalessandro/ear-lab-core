@@ -13,3 +13,15 @@ export type {
   Operation,
   Scope,
 } from './common.js';
+
+export {
+  CatalogItemSchema,
+  CatalogSnapshotSchema,
+  CatalogStatusSchema,
+} from './catalog.js';
+
+export type {
+  CatalogItem,
+  CatalogSnapshot,
+  CatalogStatus,
+} from './catalog.js';

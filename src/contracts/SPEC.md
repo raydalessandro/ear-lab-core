@@ -58,3 +58,41 @@ Il modulo non pubblica eventi, non esegue operazioni, non autorizza attori e non
 | Versione | Modifica |
 |---|---|
 | 0.1.0 | Primo envelope condiviso per artefatti, eventi e operazioni. |
+
+
+## Catalogo versionato
+
+`CatalogItemSchema` e `CatalogSnapshotSchema` estraggono la forma comune degli indici generati dal publisher EAR mktg website e dagli archivi documentali. Un item espone identità, tipo, stato editoriale, revisione, slug, metadati e riferimenti ad artefatti; uno snapshot dichiara inoltre quando e a quale revisione è stata prodotta l’intera proiezione.
+
+| Campo | Garanzia | Non decide |
+|---|---|---|
+| `id`, `kind`, `revision` | Identità stabile e versione leggibile. | La politica di generazione degli ID. |
+| `status` | Uno fra `published`, `draft`, `wip`, `coming-soon`. | Le transizioni o l’autorizzazione editoriale. |
+| `slug` | Percorso logico non vuoto, indipendente dal filesystem. | URL, dominio web o routing del consumer. |
+| `artifacts` | Collegamenti ad output immutabili attraverso `ArtifactRef`. | Dove gli artifact sono salvati o pubblicati. |
+| `metadata` | Spazio estensibile per dati specifici del publisher. | Un vocabolario globale prematuro di metadati. |
+
+Il contratto non legge Markdown, non interpreta frontmatter, non ordina il catalogo, non renderizza pagine e non scrive su filesystem. Il publisher sorgente conserva tali responsabilità; il core mette a disposizione soltanto la forma verificabile attraversabile dagli adapter.
+
+```ts
+import { CatalogSnapshotSchema } from '@ear-lab/core/contracts';
+
+const snapshot = CatalogSnapshotSchema.parse({
+  revision: 3,
+  generatedAt: '2026-08-13T12:00:00.000Z',
+  items: [
+    {
+      id: 'ear-method',
+      kind: 'document',
+      title: 'Metodo EAR',
+      status: 'published',
+      revision: '1.0.0',
+      slug: ['metodo', 'ear'],
+    },
+  ],
+});
+```
+
+| Versione | Modifica |
+|---|---|
+| 0.1.1 | Aggiunto il contratto di catalogo e snapshot versionato. |

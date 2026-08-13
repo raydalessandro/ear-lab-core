@@ -30,6 +30,8 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
   - Validatori per input esterni (API, storage, AI output)
 - 🟡 **`contracts/`** — Envelope comuni versionati
   - `Actor`, `Scope`, `ArtifactRef`, `DomainEvent`, `Operation`
+  - Primo contratto di proiezione: `CatalogItem` + `CatalogSnapshot`, compatibile
+    con publisher documentali ma indipendente da filesystem e UI.
   - Il payload di dominio resta nel package che lo possiede; il core valida
     il solo envelope e la chiave di idempotenza.
 
@@ -39,9 +41,10 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
   - Floor / spesa strutturale (da Soldi_Lab)
   - Aggregazioni temporali (mensile/annuale/normalizzazioni)
   - Da valutare: nutrienti, stagionalità (da Ricette_Lab)
-- ⬜ **`format/`** — Formatter italiani
-  - Valuta, numeri, percentuali
-  - Date relative ("ieri", "tra 3 giorni")
+- 🟡 **`format/`** — Formatter italiani
+  - Primo incremento: EUR italiano (arrotondato/preciso) e normalizzazione
+    pura di frequenze mensile, bimestrale, trimestrale, semestrale e annuale.
+  - Restano: numeri, percentuali e date relative ("ieri", "tra 3 giorni").
 
 ### Fase 3 — Persistenza (introduce stato controllato)
 
@@ -99,3 +102,5 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
 
 - 2026-05-14: Roadmap iniziale. Ordine derivato dall'analisi dei repo
   sorgente e dalla logica "puro prima, stato dopo".
+- 2026-08-13: Estratti `format` (EUR e frequenze) e il contratto di catalogo
+  versionato; test, typecheck e build verificati sul branch dedicato.
