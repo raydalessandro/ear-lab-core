@@ -83,6 +83,9 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 - **`content-workflow`** — Valutato fra 67_ENT, Scrivia e Isola, ma non estratto.
   - 67_ENT usa review/approvazione editoriale; Scrivia usa gate derivati dagli artefatti; Isola verifica consegne tecniche.
   - La decisione e il criterio di riapertura sono in `docs/CONTENT_WORKFLOW_PROMOTION_DECISION.md`.
+- **`ai-readable-publisher`** — Valutato fra EAR mktg website e Isola, ma non estratto.
+  - EAR pubblica catalogo, raw Markdown e mappe per agenti; Isola genera oggi un catalogo dati per la propria UI.
+  - La decisione e il criterio di riapertura sono in `docs/AI_READABLE_PUBLISHER_PROMOTION_DECISION.md`.
 
 ---
 
@@ -132,3 +135,6 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
 - 2026-08-13: Estratto `serial-story`: ledger Zod di semi/debiti, patch deduplicata e
   applicazione immutabile, comune ai serializzatori di Rocco-Zara e Scrivia. Il canone,
   il seed, l’audit e ogni adapter restano nei consumer.
+- 2026-08-13: C3 `ai-readable-publisher` valutata e non promossa: Isola espone oggi
+  un catalogo per UI, non un corpus per agenti equivalente al publisher di EAR mktg website.
+  Decisione documentata con condizioni concrete per una futura estrazione.
