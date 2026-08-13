@@ -4,9 +4,26 @@
   "private": true,
   "description": "EAR Lab Core – Tipi, Schemi Zod, Utils e Logica condivisa",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*/index.d.ts",
+      "default": "./dist/*/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
+    "prepare": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ci": "npm run lint && npm run typecheck && npm run test && npm run build",
