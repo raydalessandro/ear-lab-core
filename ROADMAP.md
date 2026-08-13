@@ -92,6 +92,9 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 - **`repository` ports** — Valutato fra Soldi Lab, La Famiglia e Gestionale, ma non estratto.
   - Soldi Lab ha repository Dexie, La Famiglia media storage e Gestionale server actions Supabase: nessuno è un port condiviso.
   - La decisione e il criterio di riapertura sono in `docs/REPOSITORY_PORT_PROMOTION_DECISION.md`.
+- **`policy` / command gate** — Valutato fra Gestionale, Automotive e California, ma non estratto.
+  - Solo Gestionale ha una policy ruolo-capability; Automotive e California verificano qualità e artefatti, non autorizzazioni applicative.
+  - La decisione e il criterio di riapertura sono in `docs/POLICY_GATE_PROMOTION_DECISION.md`.
 
 ---
 
@@ -149,4 +152,7 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   Decisione documentata con condizioni concrete per una futura estrazione.
 - 2026-08-13: D1 `repository` ports valutata e non promossa: Dexie repository, media
   storage e server actions Supabase non condividono ancora una frontiera I/O concreta.
+  Decisione documentata con condizioni concrete per una futura estrazione.
+- 2026-08-13: D2 `policy` / command gate valutata e non promossa: solo Gestionale
+  applica autorizzazione ruolo-capability; Automotive e California hanno gate non autorizzativi.
   Decisione documentata con condizioni concrete per una futura estrazione.

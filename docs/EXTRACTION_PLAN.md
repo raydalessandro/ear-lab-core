@@ -90,7 +90,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 | Ordine | Modulo | Fonti | Vincolo inderogabile |
 |---:|---|---|---|
 | D1 | `repository` ports | Soldi Lab, La Famiglia, Gestionale | **Non promosso:** repository Dexie, media storage e server actions Supabase hanno confini diversi. Vedi `docs/REPOSITORY_PORT_PROMOTION_DECISION.md`. |
-| D2 | `policy` / command gate | Gestionale, Automotive, California | Ogni comando porta attore, scope, idempotency key e decisione autorizzativa. |
+| D2 | `policy` / command gate | Gestionale, Automotive, California | **Non promosso:** solo Gestionale ha autorizzazione ruolo-capability; Automotive e California hanno gate di qualità/audit. Vedi `docs/POLICY_GATE_PROMOTION_DECISION.md`. |
 | D3 | `notifications` | La Famiglia, 67_ENT | Catalogo di eventi separato dai canali Web Push, Telegram o email. |
 
 ## Contratti portati nel core
@@ -126,7 +126,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 
 ## Prossimo incremento verificabile
 
-Le fasi C e D1 sono state valutate: C2 ha estratto il ledger puro comune ai serializzatori di Rocco-Zara e Scrivia; C1, C3, C4 e D1 sono stati **non promossi** fino a riuso reale. Il prossimo incremento verificabile è **D2 `policy` / command gate**: potrà entrare nel core solo una decisione autorizzativa pura condivisa, mai auth, database o UI.
+Le fasi C, D1 e D2 sono state valutate: C2 ha estratto il ledger puro comune ai serializzatori di Rocco-Zara e Scrivia; C1, C3, C4, D1 e D2 sono stati **non promossi** fino a riuso reale. Il prossimo incremento verificabile è **D3 `notifications`**: verrà promosso solo un port di dispatch condiviso; canali e delivery resteranno adapter locali.
 
 ## Riferimenti
 
