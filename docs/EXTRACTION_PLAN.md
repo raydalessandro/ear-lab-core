@@ -1,6 +1,6 @@
 # Piano di estrazione dei moduli EAR Lab
 
-**Stato:** fondamenta, B1 e B2 implementate nel branch `feat/extraction-foundations`; il prossimo incremento è B3.
+**Stato:** fondamenta e Fase B implementate nel branch `feat/extraction-foundations`; il prossimo incremento è C1.
 **Regola:** il presente piano non sposta codice automaticamente dai repository sorgente. Definisce i confini, i contratti e l’ordine con cui estrarlo in cicli TDD piccoli.
 
 > **Tesi.** `ear-lab-core` non deve diventare il contenitore di tutte le app. Deve fornire **primitive pure**, **contratti versionati** e **porte di integrazione**. I moduli che conoscono un dominio—una ricetta, un lead, un episodio, un ordine—restano nel loro repository finché non hanno almeno un secondo consumer reale.
@@ -74,7 +74,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 |---:|---|---|---|---|
 | B1 | `contracts/meal-planning` | Ricette Lab → La Famiglia | **Estratto nel core:** menu e lista spesa sono snapshot validati; attore e scope famigliare vengono risolti dal consumer. | Sync bidirezionale o FK live sul corpus. |
 | B2 | `events` | La Famiglia, 67_ENT | **Completato:** catalogo Zod collega tipo/payload e bus in-memory pubblica il fatto senza conoscere notifiche o persistenza dei consumer. | Dispatcher push/Telegram concreto. |
-| B3 | `offline-queue` | La Famiglia → Moto-lollo | Coda, retry e idempotenza non conoscono endpoint o payload di post. | Service worker/UI/hook React. |
+| B3 | `offline-queue` | La Famiglia → Moto-lollo | **Completato:** coda in-memory di `Operation`, retry e idempotenza non conoscono endpoint o payload di post; Moto-lollo resta candidato finché non ha un flusso reale. | Service worker/UI/hook React. |
 
 ### Fase C — Primo riuso di dominio
 
@@ -126,7 +126,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 
 ## Prossimo incremento verificabile
 
-Il prossimo incremento è **B3 `offline-queue`**: una coda portabile per `Operation`, retry e idempotenza, derivata da La Famiglia e verificata rispetto al possibile consumer Moto-lollo. Il core continuerà a esporre solo stato e porte pure; endpoint, service worker, hook React e UI resteranno nei consumer.
+Il prossimo incremento è **C1 `content-workflow`**: stati e transizioni editoriali da 67_ENT, promuovibili solo se Isola o Scrivia dimostrano lo stesso lifecycle. Il core continuerà a esporre solo contratti e transizioni verificabili; persistenza, UI e canali resteranno nei consumer.
 
 ## Riferimenti
 

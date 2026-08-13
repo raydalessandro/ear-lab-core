@@ -62,10 +62,10 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 
 ### Fase 4 — Avanzate (stato + side effect + tempo)
 
-- ⬜ **`offline-queue/`** — Coda offline + reconciliation
-  - `useOfflineQueue` (pattern La Famiglia)
-  - Optimistic updates
-  - Sync engine base
+- ✅ **`offline-queue/`** — Coda portabile e riconciliazione esplicita
+  - Coda in-memory di `Operation`, deduplicata per `idempotencyKey`, con retry e stati `pending`/`processing`/`failed`.
+  - Router registrato dal consumer: il core non conosce endpoint, HTTP, SDK o provider.
+  - Restano fuori persistenza, scheduler, service worker, hook React, UI e optimistic update; Moto-lollo è al momento solo un candidato senza flusso di sync implementato.
 - ⬜ **`notifications/`** — Catalogo eventi tipato
   - Event catalog (da `notification-events.ts` di La Famiglia)
   - Dispatcher con fallback (Web Push → Telegram → ...)
@@ -112,3 +112,7 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
 - 2026-08-13: Estratto `events`: catalogo Zod che collega tipo e payload, più bus
   in-memory con subscription locale. Test, typecheck e build verificati sul branch
   dedicato; persistenza e notifiche restano adapter dei consumer.
+- 2026-08-13: Estratto `offline-queue`: coda in-memory di `Operation` con router
+  consumer, idempotenza e transizioni retry. La persistenza IndexedDB, le route e
+  il Background Sync di La Famiglia restano adapter locali; Moto-lollo non ha ancora
+  un flusso operativo che giustifichi un adapter condiviso.
