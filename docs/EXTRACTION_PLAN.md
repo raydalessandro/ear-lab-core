@@ -80,7 +80,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 
 | Ordine | Modulo | Origine → consumer | Condizione di promozione |
 |---:|---|---|---|
-| C1 | `content-workflow` | 67_ENT → Isola/Scrivia | Il secondo consumer usa davvero gli stessi stati e transizioni. |
+| C1 | `content-workflow` | 67_ENT → Isola/Scrivia | **Non promosso:** Scrivia usa gate di produzione derivati da artefatti e Isola check tecnici, non il lifecycle review/approval di 67_ENT. Vedi `docs/CONTENT_WORKFLOW_PROMOTION_DECISION.md`. |
 | C2 | `serial-story` | Rocco-Zara → Scrivia | Un episodio reale passa da stato canonico a seed/audit senza copia di file. |
 | C3 | `ai-readable-publisher` | EAR mktg website → Isola | Un corpus non-EAR produce catalogo, Markdown raw e indice per agenti. |
 | C4 | `lead-core` | Automotive → secondo verticale | Due target con attributi diversi condividono schema core, consenso e audit trail. |
@@ -126,7 +126,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 
 ## Prossimo incremento verificabile
 
-Il prossimo incremento è **C1 `content-workflow`**: stati e transizioni editoriali da 67_ENT, promuovibili solo se Isola o Scrivia dimostrano lo stesso lifecycle. Il core continuerà a esporre solo contratti e transizioni verificabili; persistenza, UI e canali resteranno nei consumer.
+C1 è stato valutato e **non promosso**: manca un secondo consumer con lo stesso lifecycle editoriale di 67_ENT. Il prossimo incremento verificabile è **C2 `serial-story`**: si potrà estrarre solo una proiezione di saga realmente consumata da Scrivia, senza copiare file o introdurre il dominio narrativo nel core.
 
 ## Riferimenti
 

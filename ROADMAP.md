@@ -74,6 +74,12 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
   - Il bus in-memory valida envelope e payload, espone subscription per tipo e audit globale.
   - Non incorpora notifiche, database, webhook, retry o broker: tali adapter restano nei consumer.
 
+### Decisioni di non-promozione documentate
+
+- **`content-workflow`** — Valutato fra 67_ENT, Scrivia e Isola, ma non estratto.
+  - 67_ENT usa review/approvazione editoriale; Scrivia usa gate derivati dagli artefatti; Isola verifica consegne tecniche.
+  - La decisione e il criterio di riapertura sono in `docs/CONTENT_WORKFLOW_PROMOTION_DECISION.md`.
+
 ---
 
 ## Idee parcheggiate (non ancora in ordine)
@@ -116,3 +122,6 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   consumer, idempotenza e transizioni retry. La persistenza IndexedDB, le route e
   il Background Sync di La Famiglia restano adapter locali; Moto-lollo non ha ancora
   un flusso operativo che giustifichi un adapter condiviso.
+- 2026-08-13: C1 `content-workflow` valutata e non promossa: 67_ENT, Scrivia e Isola
+  non condividono un lifecycle editoriale. Decisione documentata con condizioni
+  concrete per una futura estrazione.
