@@ -83,7 +83,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 | C1 | `content-workflow` | 67_ENT → Isola/Scrivia | **Non promosso:** Scrivia usa gate di produzione derivati da artefatti e Isola check tecnici, non il lifecycle review/approval di 67_ENT. Vedi `docs/CONTENT_WORKFLOW_PROMOTION_DECISION.md`. |
 | C2 | `serial-story` | Rocco-Zara → Scrivia | **Completato:** i due serializzatori condividono la risoluzione immutabile di semi e debiti; il core ospita solo il ledger, non canone, seed, audit o file. |
 | C3 | `ai-readable-publisher` | EAR mktg website → Isola | **Non promosso:** Isola genera un catalogo UI locale ma non un corpus per agenti con raw Markdown, indice e dump. Vedi `docs/AI_READABLE_PUBLISHER_PROMOTION_DECISION.md`. |
-| C4 | `lead-core` | Automotive → secondo verticale | Due target con attributi diversi condividono schema core, consenso e audit trail. |
+| C4 | `lead-core` | Automotive → secondo verticale | **Non promosso:** Gestionale tratta clienti e consenso sanitario, California audit editoriale; manca un secondo prospect commerciale compatibile. Vedi `docs/LEAD_CORE_PROMOTION_DECISION.md`. |
 
 ### Fase D — Stato e poteri controllati
 
@@ -126,7 +126,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 
 ## Prossimo incremento verificabile
 
-C1 e C3 sono stati valutati e **non promossi**; C2 ha estratto il solo ledger puro comune ai serializzatori di Rocco-Zara e Scrivia. Il prossimo incremento verificabile è **C4 `lead-core`**: verrà promosso soltanto se Automotive e un secondo verticale condividono schema, consenso e audit trail senza introdurre CRM o canali nel core.
+La fase C è conclusa: C2 ha estratto il solo ledger puro comune ai serializzatori di Rocco-Zara e Scrivia; C1, C3 e C4 sono stati valutati e **non promossi** fino a riuso reale. Il prossimo incremento verificabile è **D1 `repository` ports**: saranno promosse solo interfacce pure, mentre adapter Dexie, Supabase e in-memory resteranno separati.
 
 ## Riferimenti
 
