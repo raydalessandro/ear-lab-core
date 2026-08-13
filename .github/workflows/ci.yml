@@ -14,8 +14,13 @@
 name: CI
 
 on:
+  # Un push su un branch con PR aperta scatenava due run identiche
+  # (evento `push` + evento `pull_request`), con concurrency group
+  # diversi e quindi senza cancellarsi a vicenda.
+  # Sui branch il feedback arriva dall'evento `pull_request`; su main
+  # serve comunque una run dopo il merge.
   push:
-    branches-ignore: [main]   # i push diretti su main sono rari (solo merge da PR)
+    branches: [main]
   pull_request:
     branches: [main]
 
