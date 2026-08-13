@@ -95,6 +95,9 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 - **`policy` / command gate** — Valutato fra Gestionale, Automotive e California, ma non estratto.
   - Solo Gestionale ha una policy ruolo-capability; Automotive e California verificano qualità e artefatti, non autorizzazioni applicative.
   - La decisione e il criterio di riapertura sono in `docs/POLICY_GATE_PROMOTION_DECISION.md`.
+- **`notifications` dispatch** — Valutato fra La Famiglia e 67_ENT, ma non estratto.
+  - Il catalogo e il bus eventi sono già nel core; solo La Famiglia effettua routing e delivery multi-canale, 67_ENT gestisce inbox e subscription.
+  - La decisione e il criterio di riapertura sono in `docs/NOTIFICATION_DISPATCH_PROMOTION_DECISION.md`.
 
 ---
 
@@ -155,4 +158,7 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   Decisione documentata con condizioni concrete per una futura estrazione.
 - 2026-08-13: D2 `policy` / command gate valutata e non promossa: solo Gestionale
   applica autorizzazione ruolo-capability; Automotive e California hanno gate non autorizzativi.
+  Decisione documentata con condizioni concrete per una futura estrazione.
+- 2026-08-13: D3 `notifications` dispatch valutata e non promossa: il bus eventi è già
+  il confine comune; La Famiglia è l’unico dispatcher multi-canale, 67_ENT gestisce inbox/subscription.
   Decisione documentata con condizioni concrete per una futura estrazione.
