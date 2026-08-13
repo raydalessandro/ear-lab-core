@@ -3,6 +3,11 @@
 > Ordine di estrazione dei moduli di `ear-lab-core`.
 > L'ordine è scelto per **rischio crescente**: prima ciò che è puro
 > (funzione → dato → dato), poi ciò che ha stato e side effect.
+>
+> Il dettaglio delle fonti, dei confini e dei proof-of-concept è in
+> [`docs/EXTRACTION_PLAN.md`](./docs/EXTRACTION_PLAN.md). Lo stato sotto
+> descrive ciò che è presente nel repository, non ciò che è già integrato
+> nei consumer.
 
 ---
 
@@ -12,7 +17,9 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 
 ### Fase 1 — Fondamenta (logica pura, alto riuso)
 
-- ⬜ **`datetime/`** — Date italiane, formatter, parsing
+- 🟡 **`datetime/`** — Date italiane, formatter, parsing
+  - Primo incremento: `startOfIsoWeek(Date)` estratto e testato; riceve il
+    clock come input e non usa conversioni UTC implicite.
   - Sorgenti: La Famiglia, Soldi_Lab, Ricette_Lab (formattazione ovunque)
   - Perché primo: zero dipendenze, zero stato, TDD pulitissimo
 - ⬜ **`types/`** — Tipi di dominio condivisi
@@ -21,6 +28,10 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
   - Pattern multi-space / multi-family
 - ⬜ **`schemas/`** — Schemi Zod dei tipi sopra
   - Validatori per input esterni (API, storage, AI output)
+- 🟡 **`contracts/`** — Envelope comuni versionati
+  - `Actor`, `Scope`, `ArtifactRef`, `DomainEvent`, `Operation`
+  - Il payload di dominio resta nel package che lo possiede; il core valida
+    il solo envelope e la chiave di idempotenza.
 
 ### Fase 2 — Calcolo puro (logica di business riusabile)
 
