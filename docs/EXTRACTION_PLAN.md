@@ -89,7 +89,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 
 | Ordine | Modulo | Fonti | Vincolo inderogabile |
 |---:|---|---|---|
-| D1 | `repository` ports | Soldi Lab, La Famiglia, Gestionale | Interfacce pure; Dexie/Supabase/in-memory sono adapter separati. |
+| D1 | `repository` ports | Soldi Lab, La Famiglia, Gestionale | **Non promosso:** repository Dexie, media storage e server actions Supabase hanno confini diversi. Vedi `docs/REPOSITORY_PORT_PROMOTION_DECISION.md`. |
 | D2 | `policy` / command gate | Gestionale, Automotive, California | Ogni comando porta attore, scope, idempotency key e decisione autorizzativa. |
 | D3 | `notifications` | La Famiglia, 67_ENT | Catalogo di eventi separato dai canali Web Push, Telegram o email. |
 
@@ -126,7 +126,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 
 ## Prossimo incremento verificabile
 
-La fase C è conclusa: C2 ha estratto il solo ledger puro comune ai serializzatori di Rocco-Zara e Scrivia; C1, C3 e C4 sono stati valutati e **non promossi** fino a riuso reale. Il prossimo incremento verificabile è **D1 `repository` ports**: saranno promosse solo interfacce pure, mentre adapter Dexie, Supabase e in-memory resteranno separati.
+Le fasi C e D1 sono state valutate: C2 ha estratto il ledger puro comune ai serializzatori di Rocco-Zara e Scrivia; C1, C3, C4 e D1 sono stati **non promossi** fino a riuso reale. Il prossimo incremento verificabile è **D2 `policy` / command gate**: potrà entrare nel core solo una decisione autorizzativa pura condivisa, mai auth, database o UI.
 
 ## Riferimenti
 

@@ -89,6 +89,9 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 - **`lead-core`** — Valutato fra Automotive, Gestionale e California, ma non estratto.
   - Automotive acquisisce prospect commerciali; Gestionale gestisce clienti, appuntamenti e consenso sanitario; California non contiene lead.
   - La decisione e il criterio di riapertura sono in `docs/LEAD_CORE_PROMOTION_DECISION.md`.
+- **`repository` ports** — Valutato fra Soldi Lab, La Famiglia e Gestionale, ma non estratto.
+  - Soldi Lab ha repository Dexie, La Famiglia media storage e Gestionale server actions Supabase: nessuno è un port condiviso.
+  - La decisione e il criterio di riapertura sono in `docs/REPOSITORY_PORT_PROMOTION_DECISION.md`.
 
 ---
 
@@ -143,4 +146,7 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   Decisione documentata con condizioni concrete per una futura estrazione.
 - 2026-08-13: C4 `lead-core` valutata e non promossa: Automotive non ha un secondo
   verticale di prospect commerciale compatibile; Gestionale e California hanno semantiche diverse.
+  Decisione documentata con condizioni concrete per una futura estrazione.
+- 2026-08-13: D1 `repository` ports valutata e non promossa: Dexie repository, media
+  storage e server actions Supabase non condividono ancora una frontiera I/O concreta.
   Decisione documentata con condizioni concrete per una futura estrazione.
