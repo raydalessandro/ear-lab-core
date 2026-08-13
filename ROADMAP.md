@@ -30,8 +30,10 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
   - Validatori per input esterni (API, storage, AI output)
 - 🟡 **`contracts/`** — Envelope comuni versionati
   - `Actor`, `Scope`, `ArtifactRef`, `DomainEvent`, `Operation`
-  - Primo contratto di proiezione: `CatalogItem` + `CatalogSnapshot`, compatibile
-    con publisher documentali ma indipendente da filesystem e UI.
+  - Primi contratti di proiezione: `CatalogItem` + `CatalogSnapshot`, compatibili
+    con publisher documentali, e `MealPlanSnapshot` per Ricette Lab → La Famiglia.
+  - Il contratto pasti è validato nel core ma non implica ancora route, migration
+    o integrazione operativa nei consumer.
   - Il payload di dominio resta nel package che lo possiede; il core valida
     il solo envelope e la chiave di idempotenza.
 
@@ -104,3 +106,5 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   sorgente e dalla logica "puro prima, stato dopo".
 - 2026-08-13: Estratti `format` (EUR e frequenze) e il contratto di catalogo
   versionato; test, typecheck e build verificati sul branch dedicato.
+- 2026-08-13: Estratto `MealPlanSnapshot` per il proof-of-concept Ricette Lab →
+  La Famiglia, con confini espliciti fra snapshot producer e persistenza consumer.

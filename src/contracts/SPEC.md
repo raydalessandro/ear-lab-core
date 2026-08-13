@@ -96,3 +96,47 @@ const snapshot = CatalogSnapshotSchema.parse({
 | Versione | Modifica |
 |---|---|
 | 0.1.1 | Aggiunto il contratto di catalogo e snapshot versionato. |
+
+
+## Snapshot di pianificazione pasti
+
+`MealPlanSnapshotSchema` è il contratto che consente a Ricette Lab di consegnare a La Famiglia un piano settimanale riproducibile senza far dipendere uno dei due sistemi dal database dell’altro. Il producer conserva la propria pianificazione; il consumer salva una nuova copia con un proprio ID e una propria policy di accesso.
+
+| Area | Il contratto contiene | Il contratto esclude |
+|---|---|---|
+| Identità del producer | Sistema, revisione ed istante di export. | Token, URL, sessione o segreto. |
+| Periodo | Inizio/fine locale ISO e pasti entro l’intervallo. | Timestamp UTC e fusi orari. |
+| Pasti | Ricetta snapshot, variante opzionale, porzioni e slot. | ID transitori del carrello del producer. |
+| Arricchimenti | Brief giornaliero e lista spesa opzionali. | UI, notifiche e lista spesa attiva del consumer. |
+| Identità del consumer | Nessuna. | `familyId`, membro, RLS e schema del database. |
+
+Ogni data è controllata come data civile esistente e ogni slot `data + tipo pasto` deve essere unico. Un piano non può avere estremi invertiti; brief e pasti non possono uscire dall’intervallo. I valori economici della spesa sono facoltativi e non negativi perché rappresentano una stima, non un fatto contabile.
+
+```ts
+import { MealPlanSnapshotSchema } from '@ear-lab/core/contracts';
+
+const snapshot = MealPlanSnapshotSchema.parse({
+  version: 1,
+  source: {
+    system: 'ricette-lab',
+    revision: '2026.08.13',
+    exportedAt: '2026-08-13T12:00:00.000Z',
+  },
+  title: 'Settimana 10-16 agosto',
+  period: { startDate: '2026-08-10', endDate: '2026-08-16' },
+  meals: [
+    {
+      scheduledFor: '2026-08-10',
+      mealType: 'pranzo',
+      recipe: { slug: 'pasta-al-pomodoro', title: 'Pasta al pomodoro' },
+      servings: 4,
+    },
+  ],
+});
+```
+
+L’uso reale compone questo snapshot dentro `Operation` nel repository consumer. L’adapter di La Famiglia ricava l’attore e lo scope famigliare dalla propria sessione, quindi rivalida e persiste una copia locale. Il core non implementa né tale adapter né la route HTTP.
+
+| Versione | Modifica |
+|---|---|
+| 0.1.2 | Aggiunto `MealPlanSnapshot` per il proof-of-concept Ricette Lab → La Famiglia. |

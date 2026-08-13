@@ -25,3 +25,7 @@ export type {
   CatalogSnapshot,
   CatalogStatus,
 } from './catalog.js';
+
+export { MealPlanSnapshotSchema } from './meal-planning.js';
+
+export type { MealPlanSnapshot } from './meal-planning.js';

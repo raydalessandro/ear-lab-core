@@ -72,7 +72,7 @@ L’ordine segue la roadmap esistente: prima logica pura, poi stato, infine side
 
 | Ordine | Modulo | Origine → consumer | Confine da validare | Fuori scope |
 |---:|---|---|---|---|
-| B1 | `contracts/meal-planning` | Ricette Lab → La Famiglia | Menu e lista spesa sono snapshot validati e appartenenti a uno scope famigliare. | Sync bidirezionale o FK live sul corpus. |
+| B1 | `contracts/meal-planning` | Ricette Lab → La Famiglia | **Estratto nel core:** menu e lista spesa sono snapshot validati; attore e scope famigliare vengono risolti dal consumer. | Sync bidirezionale o FK live sul corpus. |
 | B2 | `events` | La Famiglia, 67_ENT | Un fatto è pubblicato senza conoscere le notifiche o la persistenza dei consumer. | Dispatcher push/Telegram concreto. |
 | B3 | `offline-queue` | La Famiglia → Moto-lollo | Coda, retry e idempotenza non conoscono endpoint o payload di post. | Service worker/UI/hook React. |
 
@@ -103,6 +103,7 @@ I seguenti contratti vengono creati per primi perché non richiedono di spostare
 | `DomainEvent` | Un fatto già avvenuto, con tipo, versione, attore, scope e payload. | `meal-plan.published`, `content.draft-created`, `lead.received`. |
 | `Operation` | Una richiesta idempotente che può avere retry e policy. | Importa menu, transizione contenuto, comando da agente. |
 | `CatalogItem` | Un elemento pubblicabile con stato, versione e contenuto canonico. | Ricetta, scheda Isola, documento nodo432. |
+| `MealPlanSnapshot` | Un piano settimanale autosufficiente con pasti, brief e lista spesa opzionali. | Ricette Lab → La Famiglia. |
 
 ## Contratti di integrazione da sviluppare dopo le fondamenta
 
