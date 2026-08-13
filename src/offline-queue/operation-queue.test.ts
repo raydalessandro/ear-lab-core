@@ -93,6 +93,25 @@ describe('createInMemoryOperationQueue', () => {
     ]);
   });
 
+  it('non riaccoda una idempotencyKey che appartiene a un’entry failed', async () => {
+    const queue = createInMemoryOperationQueue();
+    const router = createOperationRouter();
+    router.register('post.create', (): ExecutionOutcome => ({ kind: 'retryable', reason: 'network unavailable' }));
+    queue.enqueue(operation());
+
+    await queue.process(router, { maxAttempts: 1 });
+    const duplicate = queue.enqueue(operation({ id: 'operation-002' }));
+
+    expect(duplicate.kind).toBe('duplicate');
+    expect(queue.list()).toEqual([
+      expect.objectContaining({
+        operation: expect.objectContaining({ id: 'operation-001' }),
+        status: 'failed',
+        attempts: 1,
+      }),
+    ]);
+  });
+
   it('mantiene invariata un’operazione senza handler e la riporta al chiamante', async () => {
     const queue = createInMemoryOperationQueue();
     const router = createOperationRouter();
