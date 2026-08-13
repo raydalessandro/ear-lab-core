@@ -86,6 +86,9 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 - **`ai-readable-publisher`** — Valutato fra EAR mktg website e Isola, ma non estratto.
   - EAR pubblica catalogo, raw Markdown e mappe per agenti; Isola genera oggi un catalogo dati per la propria UI.
   - La decisione e il criterio di riapertura sono in `docs/AI_READABLE_PUBLISHER_PROMOTION_DECISION.md`.
+- **`lead-core`** — Valutato fra Automotive, Gestionale e California, ma non estratto.
+  - Automotive acquisisce prospect commerciali; Gestionale gestisce clienti, appuntamenti e consenso sanitario; California non contiene lead.
+  - La decisione e il criterio di riapertura sono in `docs/LEAD_CORE_PROMOTION_DECISION.md`.
 
 ---
 
@@ -137,4 +140,7 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   il seed, l’audit e ogni adapter restano nei consumer.
 - 2026-08-13: C3 `ai-readable-publisher` valutata e non promossa: Isola espone oggi
   un catalogo per UI, non un corpus per agenti equivalente al publisher di EAR mktg website.
+  Decisione documentata con condizioni concrete per una futura estrazione.
+- 2026-08-13: C4 `lead-core` valutata e non promossa: Automotive non ha un secondo
+  verticale di prospect commerciale compatibile; Gestionale e California hanno semantiche diverse.
   Decisione documentata con condizioni concrete per una futura estrazione.
