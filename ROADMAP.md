@@ -69,9 +69,10 @@ Legenda: ⬜ da fare · 🟡 in corso · ✅ completato
 - ⬜ **`notifications/`** — Catalogo eventi tipato
   - Event catalog (da `notification-events.ts` di La Famiglia)
   - Dispatcher con fallback (Web Push → Telegram → ...)
-- ⬜ **`event-bus/`** — Bus di eventi di dominio
-  - Pub/sub interno tipato
-  - Integrazione con `notifications/`
+- ✅ **`events/`** — Catalogo e bus di eventi di dominio
+  - `defineEventCatalog` collega chiavi evento e schema Zod del payload.
+  - Il bus in-memory valida envelope e payload, espone subscription per tipo e audit globale.
+  - Non incorpora notifiche, database, webhook, retry o broker: tali adapter restano nei consumer.
 
 ---
 
@@ -108,3 +109,6 @@ Cose che potrebbero diventare moduli ma vanno valutate dopo le fasi 1-3:
   versionato; test, typecheck e build verificati sul branch dedicato.
 - 2026-08-13: Estratto `MealPlanSnapshot` per il proof-of-concept Ricette Lab →
   La Famiglia, con confini espliciti fra snapshot producer e persistenza consumer.
+- 2026-08-13: Estratto `events`: catalogo Zod che collega tipo e payload, più bus
+  in-memory con subscription locale. Test, typecheck e build verificati sul branch
+  dedicato; persistenza e notifiche restano adapter dei consumer.
